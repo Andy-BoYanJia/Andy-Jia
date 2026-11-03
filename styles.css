@@ -13,8 +13,9 @@
 .home__portrait-scene::after{content:"";position:absolute;top:0;bottom:0;width:30px;pointer-events:none;opacity:0;transition:opacity 180ms ease 950ms}
 .home__portrait-scene--sport::after{left:var(--portrait-open);transform:translateX(-100%);background:linear-gradient(to left,rgba(26,26,23,.12),transparent)}
 .home__portrait-scene--learning::after{right:var(--portrait-open);transform:translateX(100%);background:linear-gradient(to right,rgba(26,26,23,.12),transparent)}
-.home:has(.home__label--sport:hover) .home__portrait-scene--sport,.home:not(:has(.home__label:hover)):has(.home__label--sport:focus-visible) .home__portrait-scene--sport,.home:has(.home__label--learning:hover) .home__portrait-scene--learning,.home:not(:has(.home__label:hover)):has(.home__label--learning:focus-visible) .home__portrait-scene--learning{--portrait-open:100%}
-.home:has(.home__label--sport:hover) .home__portrait-scene--sport::after,.home:not(:has(.home__label:hover)):has(.home__label--sport:focus-visible) .home__portrait-scene--sport::after,.home:has(.home__label--learning:hover) .home__portrait-scene--learning::after,.home:not(:has(.home__label:hover)):has(.home__label--learning:focus-visible) .home__portrait-scene--learning::after{opacity:1;transition-delay:0ms}
+.home__portrait-scene.is-active{--portrait-open:100%;z-index:2}
+.home__portrait-scene.is-backdrop{--portrait-open:100%;z-index:1;transition:none}
+.home__portrait-scene.is-active::after{opacity:1;transition-delay:0ms}
 .home__label--learning:focus-visible{outline:2px solid var(--ink);outline-offset:8px}
 @media(min-width:761px) and (max-width:1439px){.home__portrait-full{left:13.958333vw;top:-30.555556vw;width:75.416667vw}}
 @media(max-width:760px){.home__portrait-full{left:calc(50% - 380.1px);top:auto;bottom:-75.6px;width:760.2px}}
