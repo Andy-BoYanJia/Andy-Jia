@@ -10,6 +10,9 @@ Files
   swimming.html    Swimming (Figma 89:68)
   styles.css       Shared styles, design colors and responsive layouts
   assets/          Local image assets exported from individual Figma image layers
+  learn-with-me.html  Football and frisbee invitations with expandable details
+  思考文档.md         Assignment reflection draft; confirm before submission
+  AI使用记录.md       Actual assignment prompts and personal review to complete
 
 Keep the folder structure intact. Edit the HTML to change text, and styles.css to change appearance.
 
