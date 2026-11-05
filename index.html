@@ -1,12 +1,63 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A personal portfolio of learning, sport and achievements."><title>Learner · Sport</title><link rel="stylesheet" href="styles.css?v=portrait-colors-6"><script src="home-portrait.js?v=5" defer></script></head><body>
-<main class="page home" data-figma-node="89:2"><h1 class="visually-hidden">Learner · Sport</h1>
-<div class="home__portrait-base home__portrait-base--sport"><img class="home__portrait-full" src="assets/portrait-sport.png" alt="Right half of a portrait filled with colorful sports equipment" width="1086" height="1448"></div>
-<div class="home__portrait-base home__portrait-base--learning"><img class="home__portrait-full" src="assets/portrait-learning.png" alt="Left half of a portrait" width="1344" height="1792"></div>
-<div class="home__portrait-stage" aria-hidden="true">
-  <div class="home__portrait-scene home__portrait-scene--sport"><img class="home__portrait-full" src="assets/portrait-sport.png" alt="" width="1086" height="1448"></div>
-  <div class="home__portrait-scene home__portrait-scene--learning"><img class="home__portrait-full" src="assets/portrait-learning.png" alt="" width="1344" height="1792"></div>
-</div>
-<div class="home__labels"><section class="home__label home__label--learning" tabindex="0" aria-label="Learning"><h2 class="home__heading">learning</h2><p class="home__description">My academic learning<br>and project achievements.</p></section><a class="home__label home__label--sport" href="sport.html"><h2 class="home__heading">sport</h2><p class="home__description">Frisbee, basketball, football.<br>Awards and competitions.</p></a></div>
-<a class="home__help-link" href="learn-with-me.html">Learn with me <span aria-hidden="true">↗</span></a>
-</main></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Andy Jia — a learner, an athlete, and always in motion.">
+  <meta name="theme-color" content="#cce4f4">
+  <title>Andy Jia · Sport & Learner</title>
+  <link rel="stylesheet" href="styles.css?v=portrait-colors-6">
+  <link rel="stylesheet" href="home-flight.css?v=1">
+  <script src="home-flight.js?v=1" defer></script>
+</head>
+<body class="flight-page">
+<main class="flight-home">
+  <div class="sky" aria-hidden="true">
+    <div class="sky__glow"></div><div class="sky__cloud sky__cloud--one"></div>
+    <div class="sky__cloud sky__cloud--two"></div><div class="sky__cloud sky__cloud--three"></div>
+  </div>
+  <header class="flight-nav">
+    <a class="flight-brand" href="index.html" aria-label="Andy Jia home">Andy Jia<span class="flight-brand__dot" aria-hidden="true"></span></a>
+    <a class="flight-contact" href="learn-with-me.html">Learn with me <span aria-hidden="true">↗</span></a>
+  </header>
+  <div class="flight-intro"><p class="flight-eyebrow">A LITTLE CURIOSITY. A LITTLE LIFT.</p><h1>Always in motion.</h1></div>
+  <div class="flight-stage" aria-label="Interactive flying disc">
+    <div class="flight-assembly">
+      <div class="flight-float">
+        <div class="wind" aria-hidden="true">
+          <svg class="wind__lines" viewBox="0 0 1000 500" fill="none" preserveAspectRatio="none">
+            <defs><linearGradient id="wind-fade"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+            <g stroke="url(#wind-fade)" stroke-linecap="round">
+              <path class="wind__ribbon" d="M0 155 C200 80 390 240 630 190 S860 145 1000 225" stroke-width="16"/>
+              <path d="M0 130 C200 55 390 215 630 165 S860 120 1000 200" stroke-width="1.5"/>
+              <path d="M0 165 C200 90 390 250 630 200 S860 155 1000 235" stroke-width="2"/>
+              <path class="wind__ribbon" d="M0 320 C220 390 340 250 560 310 S810 330 1000 260" stroke-width="22"/>
+              <path d="M0 300 C220 370 340 230 560 290 S810 310 1000 240" stroke-width="1.5"/>
+              <path d="M0 340 C220 410 340 270 560 330 S810 350 1000 280" stroke-width="1"/>
+              <path class="wind__streak" d="M30 220 C260 160 470 300 800 230" stroke-width="2"/>
+              <path class="wind__streak wind__streak--second" d="M90 390 C290 440 540 340 900 305" stroke-width="2"/>
+            </g>
+          </svg>
+        </div>
+        <div class="wind-words">
+          <a class="wind-word wind-word--sport" href="sport.html">Sport<span class="wind-word__arrow" aria-hidden="true">↗</span></a>
+          <span class="wind-word wind-word--learner">Learner</span>
+        </div>
+        <div class="disc-shadow" aria-hidden="true"></div>
+        <button class="flight-disc" type="button" aria-label="Drag the flying disc" aria-describedby="flight-help">
+          <img class="flight-disc__image" src="assets/frisbee-flight.png" alt="Ivory white frisbee tilted to reveal its top" draggable="false" fetchpriority="high">
+          <!-- A transparent full-body portrait can be placed here later. Its feet anchor to the top of the disc. -->
+          <span class="flight-rider" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <footer class="flight-footer">
+    <p class="flight-caption">Sport. Learning.<br><span>Room to take flight.</span></p>
+    <p class="flight-hint" id="flight-help"><span class="flight-hint__icon" aria-hidden="true">✥</span><span>Grab the disc. Find your flow.<span class="visually-hidden"> Use the arrow keys to move it, and Home or Escape to return it to the start.</span></span></p>
+    <button class="flight-reset" type="button" aria-label="Return the disc to its starting position"><span aria-hidden="true">↺</span> Reset flight</button>
+  </footer>
+  <span class="visually-hidden" role="status" aria-live="polite" id="flight-status"></span>
+</main>
+</body>
+</html>
