@@ -11,6 +11,23 @@
   let frame = 0;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
+  function finishArrival() {
+    delete assembly.dataset.arrival;
+  }
+
+  function startArrival() {
+    if (assembly.dataset.arrival !== 'pending') return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) finishArrival();
+    else assembly.dataset.arrival = 'flying';
+  }
+
+  assembly.addEventListener('animationend', event => {
+    if (event.target === assembly && event.animationName === 'flight-arrival') finishArrival();
+  });
+  const image = disc.querySelector('img');
+  if (image?.decode) image.decode().then(startArrival, finishArrival);
+  else startArrival();
+
   function bounds() {
     // Reserve space for the gentle bob, keeping the full disc inside the homepage.
     const size = assembly.getBoundingClientRect();
@@ -47,6 +64,7 @@
   }
 
   function returnHome() {
+    finishArrival();
     if (drag) finish({ pointerId: drag.id });
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
@@ -58,6 +76,7 @@
 
   disc.addEventListener('pointerdown', event => {
     if (!event.isPrimary || event.button !== 0) return;
+    finishArrival();
     const rect = assembly.getBoundingClientRect();
     const container = home.getBoundingClientRect();
     const center = { x: rect.left + rect.width / 2 - container.left, y: rect.top + rect.height / 2 - container.top };
@@ -90,6 +109,7 @@
     const steps = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
     if (!steps[event.key]) return;
     event.preventDefault();
+    finishArrival();
     const rect = assembly.getBoundingClientRect();
     const container = home.getBoundingClientRect();
     const current = position || { x: rect.left + rect.width / 2 - container.left, y: rect.top + rect.height / 2 - container.top };

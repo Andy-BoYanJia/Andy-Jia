@@ -10,6 +10,8 @@
 .flight-intro{position:absolute;top:19%;left:9%;pointer-events:none;z-index:1}.flight-eyebrow{font-size:10px;letter-spacing:2.8px;font-weight:500;color:#4b7187}.flight-intro h1{margin-top:14px;font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(30px,3vw,48px);letter-spacing:-1.7px;color:#31596e}
 .flight-stage{position:absolute;inset:0;z-index:2;pointer-events:none}
 .flight-assembly{position:absolute;left:62%;top:60%;width:clamp(300px,38vw,600px);transform:translate(-50%,-50%);pointer-events:none;will-change:left,top}
+.flight-assembly[data-arrival="pending"]{visibility:hidden}
+.flight-assembly[data-arrival="flying"]{animation:flight-arrival 1850ms cubic-bezier(.28,.08,.23,1) both}
 .flight-float{position:relative;width:100%;animation:disc-float 5.8s ease-in-out infinite;will-change:transform}
 .flight-disc{position:relative;display:block;width:100%;padding:0;border:0;background:none;color:inherit;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;pointer-events:auto;-webkit-tap-highlight-color:transparent;outline-offset:12px;border-radius:50%}
 .flight-disc__image{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 22px 18px #40799729);user-select:none;-webkit-user-drag:none}
@@ -26,6 +28,10 @@
 .flight-footer{position:absolute;left:4.4%;right:4.4%;bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;z-index:4;pointer-events:none}
 .flight-caption{font-size:12px;line-height:1.65;color:#365f76}.flight-caption span{color:#66889c}.flight-hint{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.3px;color:#426c84}.flight-hint__icon{font-size:23px;font-weight:400}.flight-reset{padding:8px 0 8px 12px;display:flex;align-items:center;gap:8px;background:none;border:0;color:#426c84;font:inherit;font-size:11px;cursor:pointer;pointer-events:auto}.flight-reset span{font-size:21px}.flight-reset:hover{color:#153c53}
 .flight-home.is-dragging,.flight-home.is-dragging *{cursor:none!important}.is-dragging .flight-float,.is-dragging .disc-shadow{animation-play-state:paused}.is-dragging .flight-hint{opacity:.3}.is-dragging .wind{opacity:.9}
+@keyframes flight-arrival{
+  from{transform:translate(-50%,-50%) translate(-22vw,-27svh) scale(.16) rotate(-9deg);opacity:.25;filter:blur(2px)}
+  to{transform:translate(-50%,-50%) translate(0,0) scale(1) rotate(0);opacity:1;filter:blur(0)}
+}
 @keyframes disc-float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-18px) rotate(1deg)}}
 @keyframes shadow-breathe{0%,100%{opacity:.5;transform:rotate(-12deg) scale(1)}50%{opacity:.3;transform:rotate(-12deg) scale(.91)}}
 @keyframes wind-breathe{0%,100%{transform:rotate(-7deg) scaleY(1)}50%{transform:rotate(-4deg) scaleY(1.08)}}
