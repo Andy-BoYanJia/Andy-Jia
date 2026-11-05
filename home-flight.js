@@ -158,7 +158,7 @@
 
   disc.addEventListener('pointermove', event => {
     if (!drag || event.pointerId !== drag.id) return;
-    drag.samples = drag.samples.filter(sample => event.timeStamp - sample.time <= 120);
+    drag.samples = drag.samples.filter(sample => event.timeStamp - sample.time <= 180);
     drag.samples.push({ x: event.clientX, y: event.clientY, time: event.timeStamp });
     const container = home.getBoundingClientRect();
     move(event.clientX - container.left - drag.offsetX, event.clientY - container.top - drag.offsetY);
@@ -166,13 +166,14 @@
 
   disc.addEventListener('pointerup', event => {
     if (!drag || event.pointerId !== drag.id) return;
-    const first = drag.samples.find(sample => event.timeStamp - sample.time <= 120);
+    const last = drag.samples.at(-1);
+    const first = drag.samples.find(sample => event.timeStamp - sample.time <= 180);
     if (frame) {
       cancelAnimationFrame(frame);
       paint(true);
     }
     finish(event);
-    if (!first) return;
+    if (!first || event.timeStamp - last.time > 90) return;
     const dx = event.clientX - first.x;
     const dy = event.clientY - first.y;
     const distance = Math.hypot(dx, dy);
