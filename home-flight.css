@@ -16,6 +16,7 @@
 .flight-disc{position:relative;display:block;width:100%;padding:0;border:0;background:none;color:inherit;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;pointer-events:auto;-webkit-tap-highlight-color:transparent;outline-offset:12px;border-radius:50%}
 .flight-disc__image{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 22px 18px #40799729);user-select:none;-webkit-user-drag:none}
 .flight-disc:focus-visible{outline:2px solid #3b718d}
+.flight-assembly[data-throwing] .flight-disc,.flight-assembly[data-throwing] .wind-word{pointer-events:none}
 .flight-rider{position:absolute;left:50%;bottom:49%;width:48%;transform:translateX(-50%);pointer-events:none}
 .flight-rider img{display:block;width:100%;height:auto}
 .disc-shadow{position:absolute;left:12%;right:7%;bottom:-24%;height:17%;border-radius:50%;background:#568ca94a;filter:blur(24px);transform:rotate(-12deg);opacity:.5;animation:shadow-breathe 5.8s ease-in-out infinite;pointer-events:none}

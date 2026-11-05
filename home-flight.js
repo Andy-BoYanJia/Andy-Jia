@@ -9,6 +9,7 @@
   let position = null;
   let drag = null;
   let frame = 0;
+  let flight = null;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
   function finishArrival() {
@@ -55,6 +56,58 @@
     if (!frame) frame = requestAnimationFrame(paint);
   }
 
+  function stopThrow() {
+    flight?.cancel();
+    flight = null;
+    delete assembly.dataset.throwing;
+  }
+
+  function throwDisc(dx, dy, speed) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    if (frame) cancelAnimationFrame(frame);
+    paint();
+    const release = position;
+    position = null;
+    assembly.style.removeProperty('left');
+    assembly.style.removeProperty('top');
+
+    const stage = home.getBoundingClientRect();
+    const rect = assembly.getBoundingClientRect();
+    const origin = { x: rect.left + rect.width / 2 - stage.left, y: rect.top + rect.height / 2 - stage.top };
+    const parts = [rect, ...Array.from(assembly.querySelectorAll('.wind, .wind-word, .disc-shadow'), part => part.getBoundingClientRect())];
+    const edges = {
+      left: Math.min(...parts.map(part => part.left)) - stage.left - 40,
+      right: Math.max(...parts.map(part => part.right)) - stage.left + 40,
+      top: Math.min(...parts.map(part => part.top)) - stage.top - 40,
+      bottom: Math.max(...parts.map(part => part.bottom)) - stage.top + 40,
+    };
+
+    function outside(startX, startY, directionX, directionY) {
+      const horizontal = directionX > 0 ? stage.width - edges.left : edges.right;
+      const vertical = directionY > 0 ? stage.height - edges.top : edges.bottom;
+      const distanceX = directionX ? Math.max(0, horizontal - Math.sign(directionX) * startX) / Math.abs(directionX) : Infinity;
+      const distanceY = directionY ? Math.max(0, vertical - Math.sign(directionY) * startY) / Math.abs(directionY) : Infinity;
+      const distance = Math.min(distanceX, distanceY);
+      return { x: startX + directionX * distance, y: startY + directionY * distance };
+    }
+
+    const start = { x: release.x - origin.x, y: release.y - origin.y };
+    const exit = outside(start.x, start.y, dx, dy);
+    const entry = outside(0, 0, -dx, -dy);
+    const transform = ({ x, y }) => `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+    assembly.dataset.throwing = '';
+    flight = assembly.animate([
+      { transform: transform(start), offset: 0, easing: 'ease-in' },
+      { transform: transform(exit), opacity: 1, offset: .44 },
+      { transform: transform(exit), opacity: 0, offset: .45 },
+      { transform: transform(entry), opacity: 0, offset: .46 },
+      { transform: transform(entry), opacity: 1, offset: .47, easing: 'cubic-bezier(.15,.65,.25,1)' },
+      { transform: transform({ x: 0, y: 0 }), offset: 1 },
+    ], { duration: clamp(1450 - speed * 180, 950, 1350) });
+    flight.onfinish = stopThrow;
+  }
+
   function finish(event) {
     if (!drag || (event.pointerId !== undefined && event.pointerId !== drag.id)) return;
     const pointerId = drag.id;
@@ -65,6 +118,7 @@
 
   function returnHome() {
     finishArrival();
+    stopThrow();
     if (drag) finish({ pointerId: drag.id });
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
@@ -75,26 +129,43 @@
   }
 
   disc.addEventListener('pointerdown', event => {
-    if (!event.isPrimary || event.button !== 0) return;
+    if (!event.isPrimary || event.button !== 0 || flight) return;
     finishArrival();
     const rect = assembly.getBoundingClientRect();
     const container = home.getBoundingClientRect();
     const center = { x: rect.left + rect.width / 2 - container.left, y: rect.top + rect.height / 2 - container.top };
-    drag = { id: event.pointerId, offsetX: event.clientX - container.left - center.x, offsetY: event.clientY - container.top - center.y };
+    drag = {
+      id: event.pointerId,
+      offsetX: event.clientX - container.left - center.x,
+      offsetY: event.clientY - container.top - center.y,
+      samples: [{ x: event.clientX, y: event.clientY, time: event.timeStamp }],
+    };
     position = center;
     disc.setPointerCapture(event.pointerId);
     home.classList.add('is-dragging');
-    disc.focus({ preventScroll: true });
+    disc.blur();
     event.preventDefault();
   });
 
   disc.addEventListener('pointermove', event => {
     if (!drag || event.pointerId !== drag.id) return;
+    drag.samples = drag.samples.filter(sample => event.timeStamp - sample.time <= 100);
+    drag.samples.push({ x: event.clientX, y: event.clientY, time: event.timeStamp });
     const container = home.getBoundingClientRect();
     move(event.clientX - container.left - drag.offsetX, event.clientY - container.top - drag.offsetY);
   });
 
-  disc.addEventListener('pointerup', finish);
+  disc.addEventListener('pointerup', event => {
+    if (!drag || event.pointerId !== drag.id) return;
+    const first = drag.samples.find(sample => event.timeStamp - sample.time <= 100);
+    finish(event);
+    if (!first) return;
+    const dx = event.clientX - first.x;
+    const dy = event.clientY - first.y;
+    const distance = Math.hypot(dx, dy);
+    const speed = distance / Math.max(1, event.timeStamp - first.time);
+    if (distance >= 22 && speed >= .55) throwDisc(dx / distance, dy / distance, speed);
+  });
   disc.addEventListener('pointercancel', finish);
   disc.addEventListener('lostpointercapture', finish);
   window.addEventListener('blur', () => { if (drag) finish({ pointerId: drag.id }); });
@@ -110,6 +181,7 @@
     if (!steps[event.key]) return;
     event.preventDefault();
     finishArrival();
+    stopThrow();
     const rect = assembly.getBoundingClientRect();
     const container = home.getBoundingClientRect();
     const current = position || { x: rect.left + rect.width / 2 - container.left, y: rect.top + rect.height / 2 - container.top };
@@ -120,6 +192,7 @@
   reset.addEventListener('click', returnHome);
   window.addEventListener('resize', () => {
     if (drag) finish({ pointerId: drag.id });
+    stopThrow();
     if (position) paint();
   });
 })();
