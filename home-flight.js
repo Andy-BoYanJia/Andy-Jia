@@ -41,10 +41,12 @@
     };
   }
 
-  function paint() {
+  function paint(followPointer = Boolean(drag)) {
     frame = 0;
     if (!position) return;
-    const limit = bounds();
+    const limit = followPointer
+      ? { minX: 0, maxX: home.clientWidth, minY: 0, maxY: home.clientHeight }
+      : bounds();
     position.x = clamp(position.x, limit.minX, limit.maxX);
     position.y = clamp(position.y, limit.minY, limit.maxY);
     assembly.style.left = `${position.x}px`;
@@ -53,7 +55,7 @@
 
   function move(x, y) {
     position = { x, y };
-    if (!frame) frame = requestAnimationFrame(paint);
+    if (!frame) frame = requestAnimationFrame(() => paint());
   }
 
   function stopThrow() {
@@ -66,7 +68,7 @@
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     if (frame) cancelAnimationFrame(frame);
-    paint();
+    paint(true);
     const release = position;
     position = null;
     assembly.style.removeProperty('left');
@@ -95,16 +97,23 @@
     const start = { x: release.x - origin.x, y: release.y - origin.y };
     const exit = outside(start.x, start.y, dx, dy);
     const entry = outside(0, 0, -dx, -dy);
+    const exitDistance = Math.max(1, Math.hypot(exit.x - start.x, exit.y - start.y));
+    const entryDistance = Math.max(1, Math.hypot(entry.x, entry.y));
+    const exitTime = clamp(exitDistance / clamp(speed, .65, 2.3), 450, 1100);
+    const edgeSpeed = exitDistance / exitTime;
+    const entryTime = clamp(entryDistance / edgeSpeed * 1.65, 530, 1050);
+    const duration = exitTime + 16 + entryTime;
+    // Match the release velocity at takeoff, then ease to a stop on return.
+    const exitSlope = clamp(speed / edgeSpeed, .12, 2.6);
+    const entrySlope = clamp(edgeSpeed * entryTime / entryDistance, 1, 2.9);
     const transform = ({ x, y }) => `translate(-50%, -50%) translate(${x}px, ${y}px)`;
     assembly.dataset.throwing = '';
     flight = assembly.animate([
-      { transform: transform(start), offset: 0, easing: 'ease-in' },
-      { transform: transform(exit), opacity: 1, offset: .44 },
-      { transform: transform(exit), opacity: 0, offset: .45 },
-      { transform: transform(entry), opacity: 0, offset: .46 },
-      { transform: transform(entry), opacity: 1, offset: .47, easing: 'cubic-bezier(.15,.65,.25,1)' },
+      { transform: transform(start), offset: 0, easing: `cubic-bezier(.24,${.24 * exitSlope},.72,.72)` },
+      { transform: transform(exit), offset: exitTime / duration, easing: 'steps(1, end)' },
+      { transform: transform(entry), offset: (exitTime + 16) / duration, easing: `cubic-bezier(.28,${.28 * entrySlope},.6,1)` },
       { transform: transform({ x: 0, y: 0 }), offset: 1 },
-    ], { duration: clamp(1450 - speed * 180, 950, 1350) });
+    ], { duration });
     flight.onfinish = stopThrow;
   }
 
@@ -149,7 +158,7 @@
 
   disc.addEventListener('pointermove', event => {
     if (!drag || event.pointerId !== drag.id) return;
-    drag.samples = drag.samples.filter(sample => event.timeStamp - sample.time <= 100);
+    drag.samples = drag.samples.filter(sample => event.timeStamp - sample.time <= 120);
     drag.samples.push({ x: event.clientX, y: event.clientY, time: event.timeStamp });
     const container = home.getBoundingClientRect();
     move(event.clientX - container.left - drag.offsetX, event.clientY - container.top - drag.offsetY);
@@ -157,14 +166,18 @@
 
   disc.addEventListener('pointerup', event => {
     if (!drag || event.pointerId !== drag.id) return;
-    const first = drag.samples.find(sample => event.timeStamp - sample.time <= 100);
+    const first = drag.samples.find(sample => event.timeStamp - sample.time <= 120);
+    if (frame) {
+      cancelAnimationFrame(frame);
+      paint(true);
+    }
     finish(event);
     if (!first) return;
     const dx = event.clientX - first.x;
     const dy = event.clientY - first.y;
     const distance = Math.hypot(dx, dy);
     const speed = distance / Math.max(1, event.timeStamp - first.time);
-    if (distance >= 22 && speed >= .55) throwDisc(dx / distance, dy / distance, speed);
+    if (distance >= 16 && speed >= .32) throwDisc(dx / distance, dy / distance, speed);
   });
   disc.addEventListener('pointercancel', finish);
   disc.addEventListener('lostpointercapture', finish);
