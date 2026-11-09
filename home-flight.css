@@ -31,3 +31,49 @@
 @media(min-width:1800px){.flight-assembly{width:32vw;max-width:760px}.wind-word{font-size:8vw}}
 @media(max-width:760px){.flight-home{min-height:580px}.flight-nav{left:24px;right:24px;top:24px}.flight-contact{font-size:12px;gap:12px;padding:10px 15px}.flight-assembly{width:72vw;min-width:250px;left:60%;top:63%}.wind{right:14%;top:-68%;width:145%;height:210%;transform:rotate(8deg)}.wind-words{right:26%;top:-45%;width:103%;height:145%;transform:rotate(-8deg)}.wind-word{font-size:clamp(58px,15vw,105px);letter-spacing:-4px}.wind-word--sport{left:4%;top:-8%}.wind-word--learner{top:45%;left:-8%}.sky__cloud{filter:blur(30px);height:60vw;width:120vw}.sky__cloud--two{right:-65%;top:47%}.sky__cloud--three{bottom:-10%;left:-10%;height:45vw}}
 @media(prefers-reduced-motion:reduce){.flight-home *,.flight-home *::before,.flight-home *::after{animation:none!important}}
+
+/* Start the wake once the entrance has finished. */
+.flight-assembly:not([data-arrival]) .flight-scene {
+  animation: disc-float 5.8s ease-in-out infinite;
+}
+
+.flight-assembly:not([data-arrival]) .wind {
+  animation: wind-wave 4.8s ease-in-out infinite;
+}
+
+.flight-assembly:not([data-arrival]) .wind__streak {
+  animation: wind-stream 5s linear infinite;
+}
+
+.flight-assembly:not([data-arrival]) .wind__streak--second {
+  animation-delay: 1.5s;
+  animation-duration: 6s;
+}
+
+.flight-assembly:not([data-arrival]) .wind-word {
+  animation: word-wave 6s ease-in-out infinite;
+}
+
+.flight-assembly:not([data-arrival]) .wind-word--learner {
+  animation-delay: 2.2s;
+}
+
+@keyframes disc-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-22px); }
+}
+
+@keyframes wind-wave {
+  0%, 100% { rotate: 0deg; scale: 1; }
+  50% { rotate: 4deg; scale: 1 1.1; }
+}
+
+@keyframes wind-stream {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 960; }
+}
+
+@keyframes word-wave {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-12px, -9px) rotate(2deg); }
+}
