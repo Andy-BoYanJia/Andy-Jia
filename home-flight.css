@@ -6,7 +6,7 @@
 .sky__cloud--one{left:-22%;top:10%;opacity:.65}.sky__cloud--two{right:-25%;top:46%;height:15vw;opacity:.8}.sky__cloud--three{left:5%;bottom:-16%;width:90vw;height:20vw;opacity:.7}
 .flight-nav{position:absolute;left:4.4%;right:4.4%;top:36px;display:flex;align-items:center;justify-content:flex-end;z-index:5}
 
-.flight-contact{display:flex;align-items:center;gap:25px;border:1px solid #315b7140;border-radius:999px;padding:13px 21px;font-size:14px;backdrop-filter:blur(12px);background:#ffffff18}.flight-contact span{font-size:21px}.flight-contact:hover{background:#ffffff5c;text-decoration:none}
+.flight-contact{display:flex;align-items:center;gap:25px;border:1px solid #315b7140;border-radius:999px;padding:13px 21px;font-size:14px;backdrop-filter:blur(12px);background:#ffffff18}.flight-contact__arrow{font-size:21px}.flight-contact:hover{background:#ffffff5c;text-decoration:none}
 
 .flight-stage{position:absolute;inset:0;z-index:2;pointer-events:none}
 .flight-assembly{position:absolute;left:62%;top:60%;width:clamp(300px,38vw,600px);transform:translate(-50%,-50%);pointer-events:none}
@@ -23,14 +23,14 @@
 .wind-words{position:absolute;right:66%;top:-16%;width:126%;height:140%;transform:rotate(-8deg);pointer-events:none}
 .wind-word{position:absolute;display:block;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;font-size:clamp(65px,8.5vw,142px);letter-spacing:-6px;line-height:1.05;white-space:nowrap;text-shadow:0 2px 25px #f6fcff55;transform-origin:right center;pointer-events:auto}
 .wind-word--sport{top:-4%;left:17%;color:#2c5972}.wind-word--learner{top:53%;left:0;color:#557e96;pointer-events:none}
-.wind-word__arrow{display:inline-block;font-family:Arial,sans-serif;font-size:.24em;font-style:normal;vertical-align:top;margin:14% 0 0 10px;letter-spacing:0;opacity:0}.wind-word--sport:hover{text-decoration:none}.wind-word--sport:hover .wind-word__arrow,.wind-word--sport:focus-visible .wind-word__arrow{opacity:1}
+.wind-word__arrow{display:inline-block;font-family:Arial,sans-serif;font-size:.24em;font-style:normal;vertical-align:top;margin:14% 0 0 10px;letter-spacing:0}.wind-word--sport:hover{text-decoration:none}
 @keyframes flight-arrival{
   from{transform:translate(-50%,-50%) translate(-22vw,-27svh) scale(.16) rotate(-9deg);opacity:.25;filter:blur(2px)}
   to{transform:translate(-50%,-50%) translate(0,0) scale(1) rotate(0);opacity:1;filter:blur(0)}
 }
 @media(min-width:1800px){.flight-assembly{width:32vw;max-width:760px}.wind-word{font-size:8vw}}
 @media(max-width:760px){.flight-home{min-height:580px}.flight-nav{left:24px;right:24px;top:24px}.flight-contact{font-size:12px;gap:12px;padding:10px 15px}.flight-assembly{width:72vw;min-width:250px;left:60%;top:63%}.wind{right:14%;top:-68%;width:145%;height:210%;transform:rotate(8deg)}.wind-words{right:26%;top:-45%;width:103%;height:145%;transform:rotate(-8deg)}.wind-word{font-size:clamp(58px,15vw,105px);letter-spacing:-4px}.wind-word--sport{left:4%;top:-8%}.wind-word--learner{top:45%;left:-8%}.sky__cloud{filter:blur(30px);height:60vw;width:120vw}.sky__cloud--two{right:-65%;top:47%}.sky__cloud--three{bottom:-10%;left:-10%;height:45vw}}
-@media(prefers-reduced-motion:reduce){.flight-home *,.flight-home *::before,.flight-home *::after{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.flight-home *,.flight-home *::before,.flight-home *::after{animation:none!important;transition:none!important}}
 
 /* Start the wake once the entrance has finished. */
 .flight-assembly:not([data-arrival]) .flight-scene {
@@ -76,4 +76,26 @@
 @keyframes word-wave {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
   50% { transform: translate(-12px, -9px) rotate(2deg); }
+}
+
+.flight-contact__arrow,
+.wind-word__arrow {
+  transition: opacity 160ms ease;
+}
+
+.flight-contact__label,
+.wind-word--sport {
+  transform-origin: left center;
+  transition: scale 160ms ease;
+}
+
+.flight-contact:is(:hover, :focus-visible) .flight-contact__arrow,
+.wind-word--sport:is(:hover, :focus-visible) .wind-word__arrow {
+  opacity: 0;
+}
+
+.flight-contact:is(:hover, :focus-visible) .flight-contact__label,
+.wind-word--sport:is(:hover, :focus-visible) {
+  font-weight: 600;
+  scale: 1.035;
 }
