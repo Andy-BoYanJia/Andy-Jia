@@ -51,3 +51,182 @@
 .help__footer a{align-self:flex-start;margin-top:8px}
 @media(min-width:761px) and (max-width:1439px){.home__help-link{right:4.444444vw;top:2.777778vw;font-size:clamp(16px,1.388889vw,20px)}}
 @media(max-width:760px){.home__help-link{right:24px;left:auto;top:auto;bottom:24px;padding:12px 20px;font-size:18px}.help{padding:24px 24px 40px}.help__nav{font-size:15px;gap:16px}.help__header{margin:48px 0 32px}.help__intro{font-size:18px}.help__grid{grid-template-columns:1fr;gap:28px}.help-card__image{height:auto;aspect-ratio:4/3}.help-card__body{padding:22px;font-size:17px;gap:16px}.help-card__body .section-title{font-size:27px}.help__footer{margin-top:36px}}
+
+/* Carry the homepage sky and type into the portfolio pages. */
+html:has(.page) {
+  --ink: #183a50;
+  --border: #315b7140;
+  --sky-title: #2c5972;
+  --sky-muted: #42677d;
+  --sky-surface: #ffffff52;
+  --sky-radius: 24px;
+  background: radial-gradient(ellipse at 76% 5%, #f8fcffb3, transparent 34%),
+    radial-gradient(ellipse at 12% 52%, #f8fcff99, transparent 30%),
+    linear-gradient(155deg, #e7f3fa, #c4def1 38%, #b4d7ef 64%, #e0eff6);
+  background-attachment: fixed;
+}
+
+.page:is(.catalog, .football, .frisbee, .swimming, .help) {
+  min-height: 100svh;
+  padding: clamp(28px, 4vw, 56px) var(--gutter) clamp(48px, 7vw, 96px);
+  background: transparent;
+}
+
+.page .nav,
+.page .help__nav {
+  position: static;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 clamp(36px, 6vw, 80px);
+  padding: 0;
+  color: var(--sky-muted);
+  font-size: 14px;
+}
+
+.page :is(.nav, .help__nav) a,
+.page .help__footer a {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #ffffff28;
+  color: var(--ink);
+}
+
+.page :is(.nav, .help__nav) a:hover,
+.page .help__footer a:hover {
+  background: #ffffff80;
+  text-decoration: none;
+}
+
+.page :is(.title, .section-title, .sport-card__title) {
+  color: var(--sky-title);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.page .title {
+  margin-top: 0;
+  font-size: clamp(50px, 8.5vw, 120px);
+  line-height: 1;
+  letter-spacing: -.055em;
+}
+
+.page :is(.section-title, .sport-card__title) {
+  font-size: clamp(25px, 3vw, 38px);
+  line-height: 1.2;
+}
+
+.page .copy,
+.page .catalog__intro,
+.page .help__intro {
+  max-width: 68ch;
+  font-size: clamp(17px, 1.65vw, 21px);
+  line-height: 1.6;
+}
+
+.page .section {
+  gap: 10px;
+}
+
+.catalog__intro {
+  margin: 16px 0 36px;
+  color: var(--sky-muted);
+}
+
+.sport-card,
+.help-card {
+  overflow: hidden;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--sky-radius);
+  background: var(--sky-surface);
+  box-shadow: 0 16px 36px #315b7114;
+}
+
+.sport-card:hover {
+  background: #ffffff80;
+  text-decoration: none;
+}
+
+.sport-card__photo {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: radial-gradient(ellipse at 35% 28%, #ffffff8c, transparent 60%);
+  color: var(--sky-muted);
+  font-size: 14px;
+}
+
+.sport-card__title {
+  padding: 18px 22px 22px;
+}
+
+.page :is(.football__content, .frisbee__content, .swimming__text) {
+  gap: clamp(24px, 3vw, 42px);
+}
+
+.football__photos {
+  height: auto;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: clamp(16px, 3vw, 32px);
+}
+
+.football__photos figure {
+  width: min(100%, 360px);
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.page :is(.football__photos figure, .frisbee__photo, .swimming__photo) {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--sky-radius);
+  box-shadow: 0 16px 36px #315b711c;
+}
+
+.page.frisbee {
+  height: auto;
+  overflow: visible;
+}
+
+.frisbee__columns {
+  height: auto;
+  overflow: visible;
+}
+
+.frisbee__photo {
+  position: static;
+  width: min(100%, 540px);
+  height: auto;
+  aspect-ratio: 495 / 311;
+  margin-top: clamp(24px, 4vw, 48px);
+}
+
+.swimming__stats,
+.help__eyebrow {
+  color: var(--sky-muted);
+}
+
+.help__header {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .page .help__nav {
+    flex-wrap: wrap;
+  }
+
+  .page .title {
+    font-size: clamp(45px, 12vw, 72px);
+  }
+
+  .football__photos figure {
+    width: 100%;
+  }
+}
