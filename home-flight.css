@@ -86,7 +86,10 @@
 .flight-contact__label,
 .wind-word--sport {
   transform-origin: left center;
-  transition: scale 160ms ease;
+  -webkit-text-stroke: 0 currentColor;
+  transition-property: scale, -webkit-text-stroke-width;
+  transition-duration: 280ms;
+  transition-timing-function: cubic-bezier(.22, .61, .36, 1);
 }
 
 .flight-contact:is(:hover, :focus-visible) .flight-contact__arrow,
@@ -96,6 +99,6 @@
 
 .flight-contact:is(:hover, :focus-visible) .flight-contact__label,
 .wind-word--sport:is(:hover, :focus-visible) {
-  font-weight: 600;
+  -webkit-text-stroke-width: .02em;
   scale: 1.035;
 }
