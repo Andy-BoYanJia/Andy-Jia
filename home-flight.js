@@ -91,10 +91,12 @@
           element.setAttribute('aria-hidden', 'true');
           element.textContent = whole.textContent;
           element.style.clipPath = `polygon(${triangle.map(([x, y]) => `${x}% ${y}%`).join(', ')})`;
-          const x = (column / (columns - 1) - .5) * 110 + randomBetween(-22, 22);
-          const y = (row === 0 ? -1 : 1) * randomBetween(34, 82);
-          const scatter = `translate(${x}px, ${y}px) rotate(${randomBetween(-24, 24)}deg)`;
-          shards.push({ element, scatter });
+          const x = (column / (columns - 1) - .5) * 220 + randomBetween(-32, 32);
+          const y = (row === 0 ? -1 : 1) * randomBetween(54, 135);
+          const spin = randomBetween(-85, 85);
+          const pose = (distance, scale) =>
+            `translate(${x * distance}px, ${y * distance}px) rotate(${spin * distance}deg) scale(${scale})`;
+          shards.push({ element, burst: pose(.75, 1), scatter: pose(1, randomBetween(.7, .95)) });
           fragment.append(element);
         }
       }
@@ -170,11 +172,23 @@
           if (spin) {
             const fracture = fractureWord(element);
             fractures.set(element, fracture);
-            play(fracture.whole, [{ opacity: 1 }, { opacity: 0, offset: .18 }, { opacity: 0 }], { duration, delay });
+            play(element, [
+              { scale: '1' },
+              { scale: '.96 1.04', offset: .055 },
+              { scale: '1.045 .98', offset: .10 },
+              { scale: '1', offset: .22 },
+              { scale: '1' },
+            ], { duration, delay });
+            play(fracture.whole, [
+              { opacity: 1, easing: 'steps(1, end)' },
+              { opacity: 0, offset: .10 },
+              { opacity: 0 },
+            ], { duration, delay });
             for (const shard of fracture.shards) {
               play(shard.element, [
-                { opacity: 0, transform: 'none' },
-                { opacity: 1, transform: 'none', offset: .10, easing: 'ease-out' },
+                { opacity: 0, transform: 'none', easing: 'steps(1, end)' },
+                { opacity: 1, transform: 'none', offset: .10, easing: 'cubic-bezier(.12,.78,.25,1)' },
+                { opacity: 1, transform: shard.burst, offset: .35, easing: 'ease-out' },
                 { opacity: 1, transform: shard.scatter },
               ], { duration, delay });
             }
