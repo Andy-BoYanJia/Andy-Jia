@@ -103,6 +103,23 @@
   transition: opacity 160ms ease;
 }
 
+.wind-word__label {
+  position: relative;
+  display: inline-block;
+}
+
+.wind-word__shard {
+  position: absolute;
+  inset: -.14em;
+  padding: .14em;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.flight-scene[data-launching] .wind-word__arrow {
+  opacity: 0;
+}
+
 .flight-contact__label,
 .wind-word--sport {
   transform-origin: left center;

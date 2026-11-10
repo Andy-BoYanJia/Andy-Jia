@@ -66,6 +66,43 @@
 
   const randomBetween = (min, max) => min + Math.random() * (max - min);
 
+  function fractureWord(word) {
+    const label = word.querySelector('.wind-word__label');
+    const whole = label.querySelector('.wind-word__whole');
+    const columns = Math.ceil(whole.textContent.length / 1.5);
+    // Neighboring pieces share the same vertices so the letters fit back together.
+    const grid = [0, 50, 100].map((y, row) =>
+      Array.from({ length: columns + 1 }, (_, column) => [
+        column * 100 / columns + (column > 0 && column < columns ? randomBetween(-6, 6) : 0),
+        y + (row === 1 ? randomBetween(-13, 13) : 0),
+      ])
+    );
+    const shards = [];
+    const fragment = document.createDocumentFragment();
+    for (let row = 0; row < 2; row++) {
+      for (let column = 0; column < columns; column++) {
+        const a = grid[row][column];
+        const b = grid[row][column + 1];
+        const c = grid[row + 1][column];
+        const d = grid[row + 1][column + 1];
+        for (const triangle of [[a, b, c], [b, d, c]]) {
+          const element = document.createElement('span');
+          element.className = 'wind-word__shard';
+          element.setAttribute('aria-hidden', 'true');
+          element.textContent = whole.textContent;
+          element.style.clipPath = `polygon(${triangle.map(([x, y]) => `${x}% ${y}%`).join(', ')})`;
+          const x = (column / (columns - 1) - .5) * 110 + randomBetween(-22, 22);
+          const y = (row === 0 ? -1 : 1) * randomBetween(34, 82);
+          const scatter = `translate(${x}px, ${y}px) rotate(${randomBetween(-24, 24)}deg)`;
+          shards.push({ element, scatter });
+          fragment.append(element);
+        }
+      }
+    }
+    label.append(fragment);
+    return { whole, shards };
+  }
+
   function offscreen(elements, angle, wordSpace) {
     const frame = stage.getBoundingClientRect();
     const bounds = elements.map(element => element.getBoundingClientRect());
@@ -93,6 +130,7 @@
     scene.dataset.launching = '';
 
     const animations = [];
+    const fractures = new Map();
     function play(element, keyframes, timing) {
       const animation = element.animate(keyframes, { fill: 'both', ...timing });
       animations.push(animation);
@@ -129,6 +167,18 @@
                 { translate: exit },
               ];
           play(element, frames, { duration, delay, easing: spin ? 'cubic-bezier(.16,.55,.38,1)' : 'linear' });
+          if (spin) {
+            const fracture = fractureWord(element);
+            fractures.set(element, fracture);
+            play(fracture.whole, [{ opacity: 1 }, { opacity: 0, offset: .18 }, { opacity: 0 }], { duration, delay });
+            for (const shard of fracture.shards) {
+              play(shard.element, [
+                { opacity: 0, transform: 'none' },
+                { opacity: 1, transform: 'none', offset: .10, easing: 'ease-out' },
+                { opacity: 1, transform: shard.scatter },
+              ], { duration, delay });
+            }
+          }
         }
       }
       play(shadow, [{ opacity: 0.5 }, { opacity: 0 }], { duration: 320, delay: 90 });
@@ -144,6 +194,17 @@
                 { translate: '0px 0px', rotate: '0deg' }]
             : [{ translate: entry }, { translate: '0px 0px' }];
           play(element, frames, { duration: spin ? 930 : 1060, delay, easing: 'cubic-bezier(.18,.72,.25,1)' });
+          const fracture = fractures.get(element);
+          if (fracture) {
+            play(fracture.whole, [{ opacity: 0 }, { opacity: 0, offset: .78 }, { opacity: 1 }], { duration: 930, delay });
+            for (const shard of fracture.shards) {
+              play(shard.element, [
+                { opacity: 1, transform: shard.scatter, easing: 'cubic-bezier(.22,.68,.35,1)' },
+                { opacity: 1, transform: 'none', offset: .78 },
+                { opacity: 0, transform: 'none' },
+              ], { duration: 930, delay });
+            }
+          }
         }
       }
       play(shadow, [{ opacity: 0 }, { opacity: 0.5 }], { duration: 520, delay: 300 });
@@ -151,6 +212,9 @@
       await Promise.all(animations.slice(departing.length).map(animation => animation.finished));
     } finally {
       for (const animation of animations) animation.cancel();
+      for (const { shards } of fractures.values()) {
+        for (const { element } of shards) element.remove();
+      }
       delete scene.dataset.launching;
     }
   });
