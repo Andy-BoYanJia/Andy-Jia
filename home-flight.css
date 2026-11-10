@@ -63,6 +63,26 @@
   50% { transform: translateY(-22px); }
 }
 
+.flight-assembly:not([data-arrival]) .flight-disc {
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  transition: transform 520ms cubic-bezier(.18, .75, .24, 1);
+}
+
+.flight-assembly:not([data-arrival]) .flight-scene:is([data-dragging], [data-launching]) {
+  animation-play-state: paused;
+}
+
+.flight-assembly:not([data-arrival]) .flight-scene[data-dragging] .flight-disc {
+  cursor: grabbing;
+  transition: none;
+}
+
+.flight-assembly:not([data-arrival]) .flight-scene[data-launching] :is(.flight-disc, .wind-word) {
+  pointer-events: none;
+}
+
 @keyframes wind-wave {
   0%, 100% { rotate: 0deg; scale: 1; }
   50% { rotate: 4deg; scale: 1 1.1; }
